@@ -1,5 +1,5 @@
 // Service Worker for RIMROD PWA
-const CACHE_NAME = 'rimrod-v1';
+const CACHE_NAME = 'rimrod-v1.1';
 const urlsToCache = [
   './',
   './index.html',
