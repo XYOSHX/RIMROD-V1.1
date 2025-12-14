@@ -60,6 +60,23 @@
 
     <label class="settings-label">Nombre de propositions</label>
     <input id="numOptionsInput" class="settings-input" type="number" min="3" max="12" step="1" value="10"/>
+    <label class="settings-label">Âge</label>
+<input id="ageInput" class="settings-input" type="number" min="10" max="100" step="1" value="30"/>
+
+<label class="settings-label">Sexe (optionnel)</label>
+<select id="sexSelect" class="settings-select">
+  <option value="na">Ne pas préciser</option>
+  <option value="female">Femme</option>
+  <option value="male">Homme</option>
+  <option value="other">Autre</option>
+</select>
+
+<label class="settings-label">Activité physique (hebdo)</label>
+<select id="activitySelect" class="settings-select">
+  <option value="low">Faible</option>
+  <option value="moderate">Modérée</option>
+  <option value="high">Intense</option>
+</select>
 
     <button id="closeSettingsBtn" class="settings-close-btn" type="button">Fermer</button>
   </div>
