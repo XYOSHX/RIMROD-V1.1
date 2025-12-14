@@ -1,6 +1,19 @@
 // RIMROD - Sleep Cycle Calculator
 // Calculates optimal sleep/wake times based on sleep cycles + sleep latency
 
+const SLEEP_TIPS = [
+  "Se coucher et se lever à heure fixe aide ton cerveau à mieux anticiper le sommeil.",
+  "L’exposition à la lumière le matin améliore la qualité du sommeil le soir.",
+  "L’alcool peut aider à s’endormir, mais dégrade la qualité du sommeil.",
+  "Faire du sport tard peut retarder l’endormissement chez certaines personnes.",
+  "Une chambre fraîche (18–19°C) favorise un sommeil plus profond.",
+  "Les écrans avant le coucher peuvent retarder la production de mélatonine.",
+  "Un manque de sommeil chronique affecte la mémoire et la concentration.",
+  "Dormir trop longtemps peut aussi augmenter la sensation de fatigue.",
+  "Les cycles de sommeil sont plus réguliers en début de nuit.",
+  "Le stress augmente les micro-réveils pendant la nuit."
+];
+
 class RimrodApp {
   constructor() {
     this.mode = 'wake'; // 'wake' or 'sleep'
