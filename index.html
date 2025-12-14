@@ -21,105 +21,100 @@
     <link rel="apple-touch-icon" href="./icon-192.png">
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="app-header">
-            <h1 class="app-title">RIMROD</h1>
-            <p class="app-subtitle">Calculateur de cycles de sommeil</p>
-            <button class="settings-open-btn" id="openSettingsBtn" type="button">⚙️ Paramètres</button>
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <h1 class="app-title">RIMROD</h1>
+      <p class="app-subtitle">Calculateur de cycles de sommeil</p>
+      <button class="settings-open-btn" id="openSettingsBtn" type="button">⚙️ Paramètres</button>
+    </header>
 
-        </header>
-
-        <!-- Mode Toggle -->
-        <div class="mode-toggle">
-            <button class="mode-btn active" data-mode="wake">
-                <!-- SVG -->
-                <span>Je veux me réveiller à</span>
-            </button>
-            <button class="mode-btn" data-mode="sleep">
-                <!-- SVG -->
-                <span>Je vais me coucher à</span>
-            </button>
-            <!-- Settings Section -->
-<div class="settings-section" id="settingsSection" style="display:none;">
-  <div class="settings-card">
-    <h2 class="settings-title">Paramètres</h2>
-
-    <label class="settings-label">Thème</label>
-    <select id="themeSelect" class="settings-select">
-      <option value="system">Système</option>
-      <option value="light">Clair</option>
-      <option value="dark">Sombre</option>
-    </select>
-
-    <label class="settings-label">Temps pour s’endormir (minutes)</label>
-    <input id="sleepLatencyInput" class="settings-input" type="number" min="0" max="60" step="5" value="15"/>
-
-    <label class="settings-label">Durée d’un cycle (minutes)</label>
-    <input id="cycleLengthInput" class="settings-input" type="number" min="60" max="120" step="5" value="90"/>
-
-    <label class="settings-label">Nombre de propositions</label>
-    <input id="numOptionsInput" class="settings-input" type="number" min="3" max="12" step="1" value="10"/>
-    <label class="settings-label">Âge</label>
-<input id="ageInput" class="settings-input" type="number" min="10" max="100" step="1" value="30"/>
-
-<label class="settings-label">Sexe (optionnel)</label>
-<select id="sexSelect" class="settings-select">
-  <option value="na">Ne pas préciser</option>
-  <option value="female">Femme</option>
-  <option value="male">Homme</option>
-  <option value="other">Autre</option>
-</select>
-
-<label class="settings-label">Activité physique (hebdo)</label>
-<select id="activitySelect" class="settings-select">
-  <option value="low">Faible</option>
-  <option value="moderate">Modérée</option>
-  <option value="high">Intense</option>
-</select>
-
-    <button id="closeSettingsBtn" class="settings-close-btn" type="button">Fermer</button>
-  </div>
-</div>
-
-        </div>
-
-        <!-- Input Section -->
-        <div class="input-section">
-            <label for="timeInput" class="time-label" id="timeLabel">Heure de réveil</label>
-            <input type="time" id="timeInput" class="time-input" value="07:00">
-            <button id="calculateBtn" class="calculate-btn">Calculer</button>
-        </div>
-
-        <!-- Results -->
-        <div class="results-section" id="resultsSection" style="display:none">
-            <div class="timeline-container" id="timelineContainer"></div>
-        </div>
+    <!-- Mode Toggle -->
+    <div class="mode-toggle">
+      <button class="mode-btn active" data-mode="wake">
+        <span>Je veux me réveiller à</span>
+      </button>
+      <button class="mode-btn" data-mode="sleep">
+        <span>Je vais me coucher à</span>
+      </button>
     </div>
 
-    <!-- Sleep Tip -->
-<div class="info-section">
-  <div class="info-card" id="sleepTipCard">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="10"/>
-      <line x1="12" y1="16" x2="12" y2="12"/>
-      <line x1="12" y1="8" x2="12.01" y2="8"/>
-    </svg>
-    <p id="sleepTipText"></p>
+    <!-- Settings Section (✅ en dehors du toggle) -->
+    <div class="settings-section" id="settingsSection" style="display:none;">
+      <div class="settings-card">
+        <h2 class="settings-title">Paramètres</h2>
+
+        <label class="settings-label">Thème</label>
+        <select id="themeSelect" class="settings-select">
+          <option value="system">Système</option>
+          <option value="light">Clair</option>
+          <option value="dark">Sombre</option>
+        </select>
+
+        <label class="settings-label">Temps pour s’endormir (minutes)</label>
+        <input id="sleepLatencyInput" class="settings-input" type="number" min="0" max="60" step="5" value="15"/>
+
+        <label class="settings-label">Durée d’un cycle (minutes)</label>
+        <input id="cycleLengthInput" class="settings-input" type="number" min="60" max="120" step="5" value="90"/>
+
+        <label class="settings-label">Nombre de propositions</label>
+        <input id="numOptionsInput" class="settings-input" type="number" min="3" max="12" step="1" value="10"/>
+
+        <label class="settings-label">Âge</label>
+        <input id="ageInput" class="settings-input" type="number" min="10" max="100" step="1" value="30"/>
+
+        <label class="settings-label">Sexe (optionnel)</label>
+        <select id="sexSelect" class="settings-select">
+          <option value="na">Ne pas préciser</option>
+          <option value="female">Femme</option>
+          <option value="male">Homme</option>
+          <option value="other">Autre</option>
+        </select>
+
+        <label class="settings-label">Activité physique (hebdo)</label>
+        <select id="activitySelect" class="settings-select">
+          <option value="low">Faible</option>
+          <option value="moderate">Modérée</option>
+          <option value="high">Intense</option>
+        </select>
+
+        <button id="closeSettingsBtn" class="settings-close-btn" type="button">Fermer</button>
+      </div>
+    </div>
+
+    <!-- Input Section -->
+    <div class="input-section">
+      <label for="timeInput" class="time-label" id="timeLabel">Heure de réveil</label>
+      <input type="time" id="timeInput" class="time-input" value="07:00">
+      <button id="calculateBtn" class="calculate-btn">Calculer</button>
+    </div>
+
+    <!-- Results -->
+    <div class="results-section" id="resultsSection" style="display:none">
+      <div class="timeline-container" id="timelineContainer"></div>
+    </div>
+
+    <!-- Sleep Tip (✅ dans le container) -->
+    <div class="info-section">
+      <div class="info-card" id="sleepTipCard">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <p id="sleepTipText"></p>
+      </div>
+    </div>
   </div>
-</div>
 
-    <!-- App script -->
-    <script src="./rimrod-app.js"></script>
+  <script src="./rimrod-app.js"></script>
 
-    <!-- Service Worker -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js');
-            });
-        }
-    </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js');
+      });
+    }
+  </script>
 </body>
 </html>

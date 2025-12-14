@@ -22,6 +22,26 @@ class RimrodApp {
     this.init();
   }
 
+  /* ---------- TIPS ---------- */
+
+  showRandomTip() {
+    const lastIndex = parseInt(localStorage.getItem("rimrodLastTip") || "-1", 10);
+
+    let index;
+    do {
+      index = Math.floor(Math.random() * SLEEP_TIPS.length);
+    } while (index === lastIndex && SLEEP_TIPS.length > 1);
+
+    localStorage.setItem("rimrodLastTip", index);
+
+    const tipEl = document.getElementById("sleepTipText");
+    if (tipEl) {
+      tipEl.textContent = SLEEP_TIPS[index];
+    }
+  }
+
+  /* ---------- INIT ---------- */
+
   init() {
     // Core elements
     this.timeInput = document.getElementById('timeInput');
@@ -47,7 +67,7 @@ class RimrodApp {
     this.sexSelect = document.getElementById('sexSelect');
     this.activitySelect = document.getElementById('activitySelect');
 
-    // Init UI values from saved settings
+    // Init UI values
     this.themeSelect.value = this.settings.theme;
     this.sleepLatencyInput.value = this.settings.sleepLatency;
     this.cycleLengthInput.value = this.settings.cycleLength;
@@ -57,7 +77,6 @@ class RimrodApp {
     this.sexSelect.value = this.settings.sex;
     this.activitySelect.value = this.settings.activity;
 
-    // Helpers
     const saveAndRecalc = () => {
       this.saveSettings({
         sleepLatency: parseInt(this.sleepLatencyInput.value || "15", 10),
@@ -69,18 +88,16 @@ class RimrodApp {
       this.calculate();
     };
 
-    // Events - main calc
+    // Events
     this.calculateBtn.addEventListener('click', () => this.calculate());
-    this.timeInput.addEventListener('keypress', (e) => {
+    this.timeInput.addEventListener('keypress', e => {
       if (e.key === 'Enter') this.calculate();
     });
 
-    // Mode switch
     this.modeButtons.forEach(btn => {
       btn.addEventListener('click', () => this.switchMode(btn.dataset.mode));
     });
 
-    // Open/close settings
     this.openSettingsBtn.addEventListener('click', () => {
       this.settingsSection.style.display = 'block';
       this.settingsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -90,7 +107,6 @@ class RimrodApp {
       this.settingsSection.style.display = 'none';
     });
 
-    // Settings change events
     this.themeSelect.addEventListener('change', () => {
       this.saveSettings({ theme: this.themeSelect.value });
       this.applyTheme(this.settings.theme);
@@ -100,36 +116,18 @@ class RimrodApp {
     this.cycleLengthInput.addEventListener('change', saveAndRecalc);
     this.numOptionsInput.addEventListener('change', saveAndRecalc);
 
-    // Profile change events
     this.ageInput.addEventListener('change', saveAndRecalc);
     this.activitySelect.addEventListener('change', saveAndRecalc);
 
     this.sexSelect.addEventListener('change', () => {
       this.saveSettings({ sex: this.sexSelect.value });
-      // sex does not change calculations for now
     });
 
-    // Auto-calculate on load
+    // First calculation
     this.calculate();
   }
 
-  switchMode(mode) {
-    this.mode = mode;
-
-    this.modeButtons.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.mode === mode);
-    });
-
-    if (mode === 'wake') {
-      this.timeLabel.textContent = 'Heure de réveil';
-      this.resultsTitle.textContent = 'Heures de coucher idéales';
-    } else {
-      this.timeLabel.textContent = 'Heure de coucher';
-      this.resultsTitle.textContent = 'Heures de réveil idéales';
-    }
-
-    this.calculate();
-  }
+  /* ---------- SETTINGS ---------- */
 
   loadSettings() {
     const saved = JSON.parse(localStorage.getItem("rimrodSettings") || "{}");
@@ -139,7 +137,6 @@ class RimrodApp {
       sleepLatency: Number.isFinite(saved.sleepLatency) ? saved.sleepLatency : 15,
       cycleLength: Number.isFinite(saved.cycleLength) ? saved.cycleLength : 90,
       numOptions: Number.isFinite(saved.numOptions) ? saved.numOptions : 10,
-
       age: Number.isFinite(saved.age) ? saved.age : 30,
       sex: saved.sex || "na",
       activity: saved.activity || "moderate"
@@ -159,6 +156,8 @@ class RimrodApp {
     }
   }
 
+  /* ---------- CALCUL ---------- */
+
   calculate() {
     const timeValue = this.timeInput.value;
     if (!timeValue) return;
@@ -167,11 +166,31 @@ class RimrodApp {
     const inputDate = new Date();
     inputDate.setHours(hours, minutes, 0, 0);
 
-    const results = (this.mode === 'wake')
-      ? this.calculateBedtimes(inputDate)
-      : this.calculateWakeTimes(inputDate);
+    const results =
+      this.mode === 'wake'
+        ? this.calculateBedtimes(inputDate)
+        : this.calculateWakeTimes(inputDate);
 
+    this.showRandomTip();
     this.displayResults(results);
+  }
+
+  switchMode(mode) {
+    this.mode = mode;
+
+    this.modeButtons.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+
+    if (mode === 'wake') {
+      this.timeLabel.textContent = 'Heure de réveil';
+      this.resultsTitle.textContent = 'Heures de coucher idéales';
+    } else {
+      this.timeLabel.textContent = 'Heure de coucher';
+      this.resultsTitle.textContent = 'Heures de réveil idéales';
+    }
+
+    this.calculate();
   }
 
   getRecommendedCycleRange() {
@@ -193,24 +212,20 @@ class RimrodApp {
       max = Math.min(6, max);
     }
 
-    min = Math.max(1, min);
-    max = Math.min(this.settings.numOptions, max);
-
-    return { min, max };
+    return {
+      min: Math.max(1, min),
+      max: Math.min(this.settings.numOptions, max)
+    };
   }
 
   calculateBedtimes(wakeTime) {
     const results = [];
-    const CYCLE_MINUTES = this.settings.cycleLength;
-    const FALL_ASLEEP_MINUTES = this.settings.sleepLatency;
-    const NUM_OPTIONS = this.settings.numOptions;
-
+    const { cycleLength, sleepLatency, numOptions } = this.settings;
     const { min, max } = this.getRecommendedCycleRange();
 
-    for (let cycles = NUM_OPTIONS; cycles >= 1; cycles--) {
+    for (let cycles = numOptions; cycles >= 1; cycles--) {
       const bedtime = new Date(wakeTime);
-      const totalMinutes = (cycles * CYCLE_MINUTES) + FALL_ASLEEP_MINUTES;
-      bedtime.setMinutes(bedtime.getMinutes() - totalMinutes);
+      bedtime.setMinutes(bedtime.getMinutes() - (cycles * cycleLength + sleepLatency));
 
       results.push({
         time: bedtime,
@@ -224,16 +239,12 @@ class RimrodApp {
 
   calculateWakeTimes(bedtime) {
     const results = [];
-    const CYCLE_MINUTES = this.settings.cycleLength;
-    const FALL_ASLEEP_MINUTES = this.settings.sleepLatency;
-    const NUM_OPTIONS = this.settings.numOptions;
-
+    const { cycleLength, sleepLatency, numOptions } = this.settings;
     const { min, max } = this.getRecommendedCycleRange();
 
-    for (let cycles = 1; cycles <= NUM_OPTIONS; cycles++) {
+    for (let cycles = 1; cycles <= numOptions; cycles++) {
       const wakeTime = new Date(bedtime);
-      const totalMinutes = (cycles * CYCLE_MINUTES) + FALL_ASLEEP_MINUTES;
-      wakeTime.setMinutes(wakeTime.getMinutes() + totalMinutes);
+      wakeTime.setMinutes(wakeTime.getMinutes() + (cycles * cycleLength + sleepLatency));
 
       results.push({
         time: wakeTime,
@@ -245,6 +256,8 @@ class RimrodApp {
     return results;
   }
 
+  /* ---------- UI ---------- */
+
   displayResults(results) {
     this.timelineContainer.innerHTML = '';
     this.resultsSection.style.display = 'block';
@@ -254,12 +267,9 @@ class RimrodApp {
       item.className = 'timeline-item';
       if (result.recommended) item.classList.add('recommended');
 
-      const timeStr = this.formatTime(result.time);
-      const cyclesText = result.cycles === 1 ? 'cycle' : 'cycles';
-
       item.innerHTML = `
-        <div class="timeline-time">${timeStr}</div>
-        <div class="timeline-cycles">${result.cycles} ${cyclesText} de sommeil</div>
+        <div class="timeline-time">${this.formatTime(result.time)}</div>
+        <div class="timeline-cycles">${result.cycles} cycle${result.cycles > 1 ? 's' : ''} de sommeil</div>
         ${result.recommended ? '<span class="recommended-badge">RECOMMANDÉ</span>' : ''}
       `;
 
@@ -272,13 +282,15 @@ class RimrodApp {
   }
 
   formatTime(date) {
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    return `${date.getHours().toString().padStart(2, '0')}:${date
+      .getMinutes()
+      .toString()
+      .padStart(2, '0')}`;
   }
 }
 
-// Initialize app when DOM is ready
+/* ---------- BOOT ---------- */
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => new RimrodApp());
 } else {
