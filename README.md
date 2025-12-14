@@ -16,7 +16,7 @@
 ## 🚀 Utilisation
 
 ### En ligne
-Visitez simplement : https://xyoshx.github.io/RIMROD/
+Visitez simplement : https://xyoshx.github.io/RIMROD-V1.1/
 
 ### Installation sur iPhone
 1. Ouvrez l'URL dans Safari
@@ -44,7 +44,7 @@ Visitez simplement : https://xyoshx.github.io/RIMROD/
 ### Exemple
 **Vous voulez vous réveiller à 07:00 ?**
 
-RIMROD calcule 6 options :
+RIMROD calcule 10 options :
 - 21:45 (6 cycles - 10h30 de sommeil) ✨ RECOMMANDÉ
 - 23:15 (5 cycles - 8h45 de sommeil) ✨ RECOMMANDÉ
 - 00:45 (4 cycles - 7h00 de sommeil)
